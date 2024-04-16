@@ -30,14 +30,18 @@
     "react-table": "7.8.0",
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
-    "yup": "1.1.1"
+    "yup": "1.1.1",
+    "dotenv": "^16.4.5",
+    "firebase": "^10.11.0",
+    "firebase-admin": "^12.0.0"
   },
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "start": "GENERATE_SOURCEMAP=false PORT=8080 react-scripts --openssl-legacy-provider start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    "firebase:deploy": "firebase deploy"
   },
   "eslintConfig": {
     "extends": [
