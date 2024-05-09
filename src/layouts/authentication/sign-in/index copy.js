@@ -13,10 +13,10 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useReducer, useCallback } from "react";
+import { useState } from "react";
 
 // react-router-dom components
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -34,7 +34,6 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-import MDSnackbar from "components/MDSnackbar";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
@@ -45,52 +44,15 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import authService from "apis/services/auth";
 
 function Basic() {
-  const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
-  const [inputs, setInputs] = useState({
-    email: "yso1983@gmail.com",
-    password: "",
-    login_type: "",
-  });
-  const [errorSB, setErrorSB] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
-  const openErrorSB = () => setErrorSB(true);
-  const closeErrorSB = () => setErrorSB(false);
-
-  const onChange = useCallback( (e, type) => {
-    const { name, value } = e.target;
-    setInputs({
-      ...inputs,
-      [name]: value
+  const handleSignIn = (e) => {
+    authService.login({
+      email: "yso1983@gmail.com",
+      password: "123456",
     });
-  }, [inputs]);
-
-  const handleSignIn = useCallback(async () => {
-    const response = await authService.login(inputs);
-    console.log(response);
-    if (response && response.code === "0000") navigate("/"); 
-    else {
-      setErrorMsg(response.message)
-      openErrorSB()
-    }
-      
-  }, [ inputs ]);
-
-  const renderErrorSB = (
-    <MDSnackbar
-      color="error"
-      icon="warning"
-      title="Message"
-      content={errorMsg}
-      dateTime=""
-      open={errorSB}
-      onClose={closeErrorSB}
-      close={closeErrorSB}
-      bgWhite
-    />
-  );
+  };
 
   return (
     <BasicLayout image={bgImage}>
@@ -109,16 +71,33 @@ function Basic() {
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
             Sign in
           </MDTypography>
+          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
+            <Grid item xs={2}>
+              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
+                <FacebookIcon color="inherit" />
+              </MDTypography>
+            </Grid>
+            <Grid item xs={2}>
+              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
+                <GitHubIcon color="inherit" />
+              </MDTypography>
+            </Grid>
+            <Grid item xs={2}>
+              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
+                <GoogleIcon color="inherit" />
+              </MDTypography>
+            </Grid>
+          </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" name="email" fullWidth value={inputs.email} onChange={onChange}/>
+              <MDInput type="email" label="Email" fullWidth />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" name="password" fullWidth value={inputs.password} onChange={onChange}/>
+              <MDInput type="password" label="Password" fullWidth />
             </MDBox>
-            {/* <MDBox display="flex" alignItems="center" ml={-1}>
+            <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
               <MDTypography
                 variant="button"
@@ -129,13 +108,13 @@ function Basic() {
               >
                 &nbsp;&nbsp;Remember me
               </MDTypography>
-            </MDBox> */}
+            </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth onClick={handleSignIn}>
                 sign in
               </MDButton>
             </MDBox>
-            {/* <MDBox mt={3} mb={1} textAlign="center">
+            <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
                 Don&apos;t have an account?{" "}
                 <MDTypography
@@ -149,9 +128,8 @@ function Basic() {
                   Sign up
                 </MDTypography>
               </MDTypography>
-            </MDBox> */}
+            </MDBox>
           </MDBox>
-          {renderErrorSB}
         </MDBox>
       </Card>
     </BasicLayout>

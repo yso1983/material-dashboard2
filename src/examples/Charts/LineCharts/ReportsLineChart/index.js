@@ -85,6 +85,8 @@ function ReportsLineChart({ color, title, description, date, chart }) {
           <MDTypography component="div" variant="button" color="text" fontWeight="light">
             {description}
           </MDTypography>
+          { date && 
+          <>
           <Divider />
           <MDBox display="flex" alignItems="center">
             <MDTypography variant="button" color="text" lineHeight={1} sx={{ mt: 0.15, mr: 0.5 }}>
@@ -94,6 +96,8 @@ function ReportsLineChart({ color, title, description, date, chart }) {
               {date}
             </MDTypography>
           </MDBox>
+          </>
+          }
         </MDBox>
       </MDBox>
     </Card>

@@ -13,10 +13,10 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 // react-router-dom components
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -39,6 +39,8 @@ import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
+import authService from "apis/services/auth";
+
 // Material Dashboard 2 React context
 import {
   useMaterialUIController,
@@ -47,11 +49,20 @@ import {
   setWhiteSidenav,
 } from "context";
 
+function isLogin() {
+   const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || user === "undefined") {
+      return false;
+    }
+    return true;
+}
+
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
+  const navigate = useNavigate();
 
   let textColor = "white";
 
@@ -62,6 +73,11 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
+
+  const handleSignOut = useCallback(() => {
+    authService.logout();
+    navigate("/authentication/sign-in");
+  }, []);
 
   useEffect(() => {
     // A function that sets the mini state of the sidenav.
@@ -84,7 +100,15 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }, [dispatch, location]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
+  const renderRoutes = routes
+  .filter((route) => {
+    // if (!(route.key == "sign-in" && isLogin())) 
+    //   return route;
+
+    if(["statistics", "sign-out"].includes(route.key))
+      return route;
+  })
+  .map(({ type, name, icon, title, noCollapse, key, href, route }) => {
     let returnValue;
 
     if (type === "collapse") {
@@ -135,6 +159,21 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           }
         />
       );
+    } else if (type === "action") {
+      returnValue = ( 
+        <Link
+          key={key}
+          rel="noreferrer"
+          sx={{ textDecoration: "none" }}
+          onClick={handleSignOut}
+        >
+          <SidenavCollapse
+            name={name}
+            icon={icon}
+            active={false}
+          />
+        </Link>
+      );
     }
 
     return returnValue;
@@ -179,7 +218,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         }
       />
       <List>{renderRoutes}</List>
-      <MDBox p={2} mt="auto">
+      {/* <MDBox p={2} mt="auto">
         <MDButton
           component="a"
           href="https://www.creative-tim.com/product/material-dashboard-pro-react"
@@ -191,7 +230,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         >
           upgrade to pro
         </MDButton>
-      </MDBox>
+      </MDBox> */}
     </SidenavRoot>
   );
 }

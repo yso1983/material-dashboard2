@@ -44,11 +44,20 @@ import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import Statistics from "layouts/statistics";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 
 const routes = [
+  {
+    type: "collapse",
+    name: "통계",
+    key: "statistics",
+    icon: <Icon fontSize="small">equalizer</Icon>,
+    route: "/statistics",
+    component: <Statistics />,
+  },
   {
     type: "collapse",
     name: "Dashboard",
@@ -112,6 +121,15 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+  
+  {
+    type: "action",
+    name: "로그아웃",
+    key: "sign-out",
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/authentication/sign-out",
+    // component: <SignIn />,
   },
 ];
 
