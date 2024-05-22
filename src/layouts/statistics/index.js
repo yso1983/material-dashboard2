@@ -97,8 +97,10 @@ function Statistics() {
   );
 
   useEffect(() => {
-    fetchYear(2024);
-    fatchMonth();
+    if (typeof window !== 'undefined') { // 브라우저에서 실행 중인지 확인합니다.
+      fetchYear(2024);
+      fatchMonth();
+    }
   }, []);
 
 
